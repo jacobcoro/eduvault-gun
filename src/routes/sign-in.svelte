@@ -28,11 +28,14 @@
 
 <h1 class="title">Sign In</h1>
 {#if error}
-	<p class="mt-3 text-red-500 text-center font-semibold">{error}</p>
+	<p class="error">{error}</p>
 {/if}
 <SignInForm on:submit={handleSubmit} />
 
 <style lang="scss">
+	.error {
+		color: red;
+	}
 	.title {
 		text-align: center;
 	}
