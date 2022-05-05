@@ -15,23 +15,6 @@ const initGun = () => {
 	const gun = Gun({
 		peers
 	});
-	// console.log(gun, Gun);
-	// const user = gun.user();
-	// const SEA = Gun.SEA;
-	// const personPair = await SEA.pair();
-	// console.log({ personPair });
-	// const person = user.create(Math.random().toString(), 'password123', (ack) => {
-	// 	console.log(ack);
-	// 	if ('err' in ack) return;
-	// 	const auth = gun.get('~' + ack.pub);
-	// 	console.log(auth);
-	// });s
-	// const test = gun.get('test');
-	// test.put({ val: 'testval' });
-	// attaching gun to window for testing purposes
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	//@ts-ignore
-	// global.window.gun = gun;
 
 	return gun;
 };

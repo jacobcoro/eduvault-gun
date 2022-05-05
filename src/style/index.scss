@@ -16,6 +16,10 @@ $spacing: 8px;
 	padding-left: 8 * 2px;
 	padding-right: 8 * 2px;
 	cursor: pointer;
+	&:disabled {
+		background-color: var(--grey-med);
+		cursor: not-allowed;
+	}
 }
 
 @mixin input {

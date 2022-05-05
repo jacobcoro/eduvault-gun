@@ -1,33 +1,57 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
 	import Input from '$lib/components/Input.svelte';
 	import Button from '$lib/components/Button.svelte';
 
-	import { createEventDispatcher } from 'svelte';
-	import type { ServerUser } from 'src/types';
-	import { hash } from '$lib/helpers/crypto';
+	import { createNewUser } from '$lib/helpers/createNewUser';
 
 	let email = '';
 	let password = '';
 	let confirmPassword = '';
 	let error = '';
-	let confirmPasswordInputRef: HTMLElement;
+
+	$: email, validateEmail();
+	$: password, confirmPassword, validatePassword();
+	$: buttonDisabled =
+		email.length === 0 || password.length === 0 || confirmPassword.length === 0 || error.length > 0;
+
+	const validateEmail = () => {
+		email = email.trim();
+		if (email === '') return;
+		if (email.length <= 5 || email.length >= 64) {
+			error = 'Email must be 5-64 characters long';
+		} else if (!email.includes('@') || !email.includes('.')) {
+			error = 'Invalid email';
+		} else if (email.includes(' ')) {
+			error = 'Email must not include spaces';
+		} else {
+			error = '';
+		}
+	};
+	const validatePassword = () => {
+		if (password === '') return;
+
+		if (password.length < 8 || password.length >= 64) {
+			error = 'Password must be 8-64 characters long';
+		} else if (password !== confirmPassword) {
+			error = 'Passwords do not match.';
+		} else {
+			error = '';
+		}
+	};
 
 	const dispatch = createEventDispatcher();
 
-	function submit() {
-		error = '';
-		if (password !== confirmPassword) {
-			error = 'Passwords do not match.';
-			confirmPasswordInputRef.focus();
-			return;
+	const submit = async () => {
+		try {
+			const submitData = await createNewUser(email, password);
+			dispatch('submit', submitData);
+		} catch (err) {
+			console.error(err);
+			if (err instanceof Error) error = err.message;
 		}
-
-		const user: ServerUser = {
-			email,
-			passwordHash: hash(password)
-		};
-		dispatch('submit', user);
-	}
+	};
 </script>
 
 <form on:submit|preventDefault={submit} class="form">
@@ -40,13 +64,12 @@
 			name="confirm-password"
 			type="password"
 			bind:value={confirmPassword}
-			bind:inputRef={confirmPasswordInputRef}
 		/>
-		{#if error !== ''}
+		{#if error.length > 0}
 			<p class="error">{error}</p>
 		{/if}
 	</div>
-	<Button type="submit">Sign Up</Button>
+	<Button disabled={buttonDisabled} type="submit">Sign Up</Button>
 </form>
 
 <style lang="scss">

@@ -2,11 +2,11 @@
 	import SignInForm from '$lib/components/SignInForm.svelte';
 	import { goto } from '$app/navigation';
 	import { session } from '$app/stores';
-	import type { ServerUser } from 'src/types';
+	import type { SignInRequest } from 'src/types';
 
 	let error = '';
 
-	async function handleSubmit({ detail: { email, passwordHash } }: { detail: ServerUser }) {
+	async function handleSubmit({ detail: { email, passwordHash } }: { detail: SignInRequest }) {
 		const response = await fetch('/api/sign-in', {
 			method: 'POST',
 			body: JSON.stringify({ email, passwordHash }),

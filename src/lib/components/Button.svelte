@@ -1,8 +1,9 @@
 <script lang="ts">
 	export let type = 'button';
+	export let disabled = false;
 </script>
 
-<button {type}><slot /></button>
+<button {disabled} {type}><slot /></button>
 
 <style lang="scss">
 	button {
