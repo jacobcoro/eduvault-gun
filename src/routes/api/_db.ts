@@ -1,43 +1,45 @@
 import { hashPassword } from '$lib/helpers/crypto';
-import type { ServerSession, ServerUser } from 'src/types';
+import type { ServerSession, User } from 'src/types';
 import { v4 as uuidv4 } from 'uuid';
 
-const users: ServerUser[] = [];
+const users: User[] = [];
 let sessions: ServerSession[] = [];
 
-export const getUserByEmail: (email: string) => Promise<ServerUser | null> = async (email) => {
+export const getUserByEmail = (email: string) => {
 	const existingUser = users.find((user) => user.email === email);
-	if (!existingUser) return Promise.resolve(null);
-	return Promise.resolve(existingUser);
+	if (!existingUser) return null;
+	return existingUser;
 };
 
-export const registerUser = (user: ServerUser) => {
+export const registerUser = (user: User) => {
 	const existingUser = users.find((u) => u.email === user.email);
-	if (existingUser) return Promise.reject(new Error('User already exists'));
+	if (existingUser) throw new Error('User already exists');
 	// Yes I know we have ssl etc. But this double hashing means the original password never even leaves the frontend.
 	const doubleHashedPassword = hashPassword(user.passwordHash);
 	users.push({ ...user, passwordHash: doubleHashedPassword });
-	return Promise.resolve(user);
+	return user;
 };
 
 export const createSession = (email: string) => {
+	const user = getUserByEmail(email);
+	if (!user) throw new Error('user not found by email');
 	const session: ServerSession = {
 		id: uuidv4(),
-		email
+		user
 	};
 	sessions.push(session);
-	return Promise.resolve(session);
+	return session;
 };
 
 export const getSession = (id: string) => {
 	const session = sessions.find((session) => session.id === id);
-	if (!session) return Promise.resolve(null);
-	return Promise.resolve(session);
+	if (!session) null;
+	return session;
 };
 
 export const removeSession = (id: string) => {
 	const session = sessions.find((session) => session.id === id);
-	if (!session) return Promise.reject(new Error('Session not found'));
+	if (!session) throw new Error('Session not found');
 	sessions = sessions.filter((session) => session.id !== id);
-	return Promise.resolve(session);
+	return session;
 };

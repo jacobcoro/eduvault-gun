@@ -2,11 +2,11 @@
 	import { goto } from '$app/navigation';
 	import SignUpForm from '$lib/components/SignUpForm.svelte';
 	import { session } from '$app/stores';
-	import type { ServerUser } from 'src/types';
+	import type { User } from 'src/types';
 
 	let error = '';
 
-	async function handleSubmit({ detail: { email, passwordHash } }: { detail: ServerUser }) {
+	async function handleSubmit({ detail: { email, passwordHash } }: { detail: User }) {
 		const response = await fetch('/api/sign-up', {
 			method: 'POST',
 			body: JSON.stringify({ email, passwordHash }),

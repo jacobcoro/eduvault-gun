@@ -3,18 +3,25 @@ export interface User {
 	pwEncryptedPrivateKey: string;
 	pubKey: string;
 	recoveryKeyEncryptedKeyPair: string;
-}
-
-export interface ServerUser extends User {
 	passwordHash: string;
 }
 
 export interface SignInRequest {
 	email: User['email'];
-	passwordHash: ServerUser['passwordHash'];
+	passwordHash: User['passwordHash'];
 }
 
 export interface ServerSession {
 	id: string;
-	email: User['email'];
+	user: User;
 }
+
+interface JWT<T = unknown> {
+	data: T;
+	iat: number;
+	exp: number;
+}
+
+export type LoginToken = JWT<{ appID: string; personID: string }>;
+
+export type AuthToken = JWT<{ appID: string; personID: string }>;

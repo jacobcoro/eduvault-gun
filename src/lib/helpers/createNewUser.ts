@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import type { ServerUser } from 'src/types';
+import type { User } from 'src/types';
 import { decrypt, encrypt, hash } from '$lib/helpers/crypto';
 import SEA from 'gun/sea';
 
@@ -28,7 +28,7 @@ export const createNewUser = async (email: string, password: string) => {
 
 	// TODO: prompt user to email themselves the recovery key.
 
-	const signupData: ServerUser = {
+	const signupData: User = {
 		email,
 		passwordHash: hash(password),
 		pwEncryptedPrivateKey,

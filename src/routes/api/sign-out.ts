@@ -6,7 +6,7 @@ export const get: RequestHandler = async ({ request }) => {
 	const cookies = parse(request.headers.get('cookie') || '');
 
 	if (cookies.session_id) {
-		await removeSession(cookies.session_id);
+		removeSession(cookies.session_id);
 	}
 
 	return {
