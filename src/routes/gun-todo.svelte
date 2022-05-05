@@ -2,7 +2,7 @@
 	import type { IGunChain, IGunInstance } from 'gun';
 
 	import { onMount } from 'svelte';
-	import { initGun } from './api/initGun';
+	import { initGun } from '$lib/helpers/initGun';
 
 	let todoGun: IGunChain<any, IGunInstance<any>, IGunInstance<any>, 'todos'>;
 	// Create a local store to cache data from GUN
