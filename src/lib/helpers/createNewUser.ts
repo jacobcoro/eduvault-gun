@@ -12,11 +12,11 @@ export const createNewUser = async (email: string, password: string) => {
 	if (keyPairRehydrated.epriv !== keyPair.epriv)
 		throw new Error('Could not stringify and parse private key');
 
-	const pwEncryptedPrivateKey = encrypt(keyPairString, password);
-	if (!pwEncryptedPrivateKey) throw new Error('Could not encrypt private key with password');
+	const pwEncryptedKeyPair = encrypt(keyPairString, password);
+	if (!pwEncryptedKeyPair) throw new Error('Could not encrypt private key with password');
 
 	// test we can decrypt keyPair
-	const decrypted = decrypt(pwEncryptedPrivateKey, password);
+	const decrypted = decrypt(pwEncryptedKeyPair, password);
 	if (!decrypted) throw new Error('could not decrypt private key from password');
 	const rehydrated = JSON.parse(decrypted);
 	if (rehydrated.epriv !== keyPair.epriv)
@@ -31,7 +31,7 @@ export const createNewUser = async (email: string, password: string) => {
 	const signupData: User = {
 		email,
 		passwordHash: hash(password),
-		pwEncryptedPrivateKey,
+		pwEncryptedKeyPair,
 		pubKey: keyPair.epub,
 		recoveryKeyEncryptedKeyPair
 		// TODO: for 3rd party login
