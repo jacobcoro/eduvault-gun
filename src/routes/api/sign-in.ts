@@ -2,12 +2,12 @@ import { createSession, getUserByEmail } from './_db';
 import { serialize } from 'cookie';
 import type { RequestHandler } from '@sveltejs/kit';
 import { validPasswordHash } from '$lib/helpers/crypto';
-import type { ServerUser } from 'src/types';
+import type { SignInRequest } from 'src/types';
 
 export const post: RequestHandler = async ({ request }) => {
-	const { email, passwordHash }: ServerUser = await request.json();
-	const user = await getUserByEmail(email);
-	if (!user || !validPasswordHash(passwordHash, user.passwordHash)) {
+	const { email, passwordHash }: SignInRequest = await request.json();
+	const userRecord = await getUserByEmail(email);
+	if (!userRecord || !validPasswordHash(passwordHash, userRecord.passwordHash)) {
 		return {
 			status: 401,
 			body: {
@@ -17,7 +17,8 @@ export const post: RequestHandler = async ({ request }) => {
 	}
 
 	const { id } = await createSession(email);
-	const clientUser: User = { email };
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { passwordHash: doNotReturnPassword, ...clientUser } = userRecord;
 	return {
 		status: 200,
 		headers: {

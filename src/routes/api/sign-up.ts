@@ -4,8 +4,8 @@ import type { RequestHandler } from '@sveltejs/kit';
 import type { ServerUser } from 'src/types';
 
 export const post: RequestHandler = async ({ request }) => {
-	const { email, passwordHash }: ServerUser = await request.json();
-	const user = await getUserByEmail(email);
+	const userSignup: ServerUser = await request.json();
+	const user = await getUserByEmail(userSignup.email);
 	if (user) {
 		return {
 			status: 409,
@@ -15,12 +15,11 @@ export const post: RequestHandler = async ({ request }) => {
 		};
 	}
 
-	await registerUser({
-		email,
-		passwordHash
-	});
+	await registerUser(userSignup);
 
-	const { id } = await createSession(email);
+	const { id } = await createSession(userSignup.email);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { passwordHash: doNotReturnPassword, ...clientUser } = userSignup;
 	return {
 		status: 201,
 		headers: {
@@ -34,7 +33,7 @@ export const post: RequestHandler = async ({ request }) => {
 		},
 		body: {
 			user: {
-				email
+				...clientUser
 			}
 		}
 	};

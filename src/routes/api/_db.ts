@@ -16,7 +16,7 @@ export const registerUser = (user: ServerUser) => {
 	if (existingUser) return Promise.reject(new Error('User already exists'));
 	// Yes I know we have ssl etc. But this double hashing means the original password never even leaves the frontend.
 	const doubleHashedPassword = hashPassword(user.passwordHash);
-	users.push({ email: user.email, passwordHash: doubleHashedPassword });
+	users.push({ ...user, passwordHash: doubleHashedPassword });
 	return Promise.resolve(user);
 };
 
