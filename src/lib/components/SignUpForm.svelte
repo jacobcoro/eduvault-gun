@@ -3,6 +3,7 @@
 	import Button from '$lib/components/Button.svelte';
 
 	import { createNewUser } from '$lib/helpers/createNewUser';
+	import { createEventDispatcher } from 'svelte';
 
 	let email = '';
 	let password = '';
@@ -38,15 +39,13 @@
 			error = '';
 		}
 	};
+	const dispatch = createEventDispatcher();
 
 	const submit = async () => {
 		try {
 			const submitData = await createNewUser(email, password);
-			const request = new Request('/api/sign-up', {
-				method: 'POST',
-				body: JSON.stringify(submitData)
-			});
-			await fetch(request);
+
+			dispatch('submit', submitData);
 		} catch (err) {
 			console.error(err);
 			if (err instanceof Error) error = err.message;

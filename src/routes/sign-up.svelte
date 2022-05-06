@@ -6,14 +6,15 @@
 
 	let error = '';
 
-	async function handleSubmit({ detail: { email, passwordHash } }: { detail: User }) {
-		const response = await fetch('/api/sign-up', {
+	async function handleSubmit({ detail: user }: { detail: User }) {
+		const request = new Request('/api/sign-up', {
 			method: 'POST',
-			body: JSON.stringify({ email, passwordHash }),
+			body: JSON.stringify(user),
 			headers: {
 				'Content-Type': 'application/json'
 			}
 		});
+		const response = await fetch(request);
 
 		const body = await response.json();
 		if (response.ok) {
