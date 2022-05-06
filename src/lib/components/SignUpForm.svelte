@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-
 	import Input from '$lib/components/Input.svelte';
 	import Button from '$lib/components/Button.svelte';
 
@@ -41,12 +39,14 @@
 		}
 	};
 
-	const dispatch = createEventDispatcher();
-
 	const submit = async () => {
 		try {
 			const submitData = await createNewUser(email, password);
-			dispatch('submit', submitData);
+			const request = new Request('/api/sign-up', {
+				method: 'POST',
+				body: JSON.stringify(submitData)
+			});
+			await fetch(request);
 		} catch (err) {
 			console.error(err);
 			if (err instanceof Error) error = err.message;
