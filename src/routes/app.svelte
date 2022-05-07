@@ -19,11 +19,15 @@
 </script>
 
 <script lang="ts">
-	// import type { User } from 'src/types';
-	// export let user: User;
-
-	// import { session } from '$app/stores';
-	// $session.user;
+	import UseGun from '$lib/components/UseGun.svelte';
+	import type { User } from 'src/types';
+	import { session } from '$app/stores';
+	export let user: User;
+	$session.user;
 </script>
 
-<GunTodo />
+<UseGun username={user.email} password={user.passwordHash} let:gunUser>
+	{#if user.email}
+		<GunTodo {gunUser} />
+	{/if}
+</UseGun>

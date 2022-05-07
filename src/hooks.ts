@@ -14,7 +14,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	event.locals.user = null;
-	return resolve(event);
+	return resolve(event, {
+		ssr: !event.url.pathname.startsWith('/app')
+	});
 };
 
 export const getSession: GetSession = (event) => {
