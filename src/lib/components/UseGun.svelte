@@ -3,7 +3,7 @@
 
 	import type { IGunInstance, IGunInstanceRoot, IGunUserInstance } from 'gun';
 	import Gun from 'gun/gun';
-	import SEA from 'gun/sea.js';
+	import 'gun/sea.js';
 	import 'gun/lib/then.js';
 
 	import { sleep } from '$lib/helpers';
@@ -23,8 +23,6 @@
 	let gunUser: IGunUserInstance<any, any, any, IGunInstanceRoot<any, IGunInstance<any>>>;
 
 	const initGun = async (username: string, password: string, peers: string[] = communityPeers) => {
-		Gun.SEA = SEA;
-
 		gunPublic = Gun(peers);
 		const user = gunPublic.user();
 		let authenticated = false;

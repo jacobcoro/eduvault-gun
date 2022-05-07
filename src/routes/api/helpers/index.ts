@@ -1,5 +1,4 @@
 export * from './crypto';
-export * from './initGun';
 export * from './jwt';
 
 /** Sleep is a wait function */
