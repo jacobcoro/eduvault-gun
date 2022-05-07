@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
-const Gun = require('@jacobcoro/gun');
-const SEA = require('@jacobcoro/gun/sea.js');
+const Gun = require('gun');
+const SEA = require('gun/sea.js');
 
 dotenv.config();
 

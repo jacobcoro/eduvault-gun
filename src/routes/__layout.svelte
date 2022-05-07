@@ -2,6 +2,8 @@
 	import '../style/reset.css';
 	import '../style/color-theme.css';
 	import Navigation from '$lib/components/Navigation.svelte';
+	import { Buffer } from 'buffer';
+	window.Buffer = Buffer;
 </script>
 
 <div class="main">
