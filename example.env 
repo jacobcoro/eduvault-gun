@@ -1,0 +1,5 @@
+ENV_CHECK=working
+PEERS=["https://gun-manhattan.herokuapp.com/gun","https://gun-us.herokuapp.com/gun"]
+APP_SECRET=123...randomness...abc
+DB_NAME=eduvault-backend
+APP_KEY_PAIR='{"pub":"123...randomness...abc","priv":"123...randomness...abc","epub":"123...randomness...abc","epriv":"123...randomness...abc"}'

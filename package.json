@@ -12,10 +12,10 @@
 		"lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
 		"format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. .",
 		"generate-api-keys": "node ./generateApiKeys.cjs",
-		"test": "jest --env=./jest-env.cjs --detectOpenHandles",
-		"test:watch": "jest --env=./jest-env.cjs --detectOpenHandles  --watch",
-		"test-api": "jest --env=./jest-env.cjs --detectOpenHandles",
-		"test-api:watch": "jest --config ./jest.config-api.cjs --env=./jest-env-api.cjs --detectOpenHandles  --watch",
+		"test": "jest --config ./jest.config.cjs --env=./jest-env.cjs --forceExit --detectOpenHandles",
+		"test:watch": "jest --config ./jest.config.cjs --env=./jest-env.cjs --detectOpenHandles --forceExit --watch ",
+		"test-api": "jest --config ./jest.config-api.cjs --env=./jest-env-api.cjs --detectOpenHandles --forceExit",
+		"test-api:watch": "jest --config ./jest.config-api.cjs --env=./jest-env-api.cjs --detectOpenHandles --forceExit --watch",
 		"clear-jest-cache": "jest --clearCache"
 	},
 	"devDependencies": {
@@ -26,6 +26,7 @@
 		"@types/bcryptjs": "^2.4.2",
 		"@types/cookie": "^0.5.1",
 		"@types/crypto-js": "^4.1.1",
+		"@types/isomorphic-fetch": "^0.0.36",
 		"@types/jest": "^27.5.0",
 		"@types/jsonwebtoken": "^8.5.8",
 		"@types/uuid": "^8.3.4",
@@ -34,6 +35,7 @@
 		"eslint": "^7.32.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-svelte3": "^3.2.1",
+		"isomorphic-fetch": "^3.0.0",
 		"jest": "^28.0.3",
 		"jest-environment-jsdom": "^28.0.2",
 		"jest-environment-node": "^28.0.2",
@@ -46,7 +48,8 @@
 		"svelte-preprocess": "^4.10.1",
 		"ts-jest": "^28.0.1",
 		"tslib": "^2.3.1",
-		"typescript": "~4.6.2"
+		"typescript": "~4.6.2",
+		"whatwg-fetch": "^3.6.2"
 	},
 	"type": "module",
 	"dependencies": {
