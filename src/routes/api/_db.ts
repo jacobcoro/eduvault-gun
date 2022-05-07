@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { ulid } from 'ulid';
 
 import { dbDecrypt, dbEncrypt, doubleHashUser, initGun, sleep, usersKey } from './helpers';
 import { DB_NAME, PEERS } from './config';
@@ -87,7 +87,7 @@ export const createSession = async (email: string) => {
 	const user = await getUserByEmail(email);
 	if (!user) throw new Error('user not found by email');
 	const session: ServerSession = {
-		id: uuidv4(),
+		id: ulid(),
 		user
 	};
 	sessions.push(session);

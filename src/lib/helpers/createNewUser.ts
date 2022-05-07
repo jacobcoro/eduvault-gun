@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { ulid } from 'ulid';
 import type { KeyPair, User } from 'src/types';
 import { decrypt, encrypt, hash } from './crypto';
 import SEA from 'gun/sea.js';
@@ -23,7 +23,7 @@ export const createNewUser = async (email: string, password: string) => {
 	if (rehydrated.epriv !== keyPair.epriv)
 		throw new Error('Could not stringify and parse private key');
 
-	const recoveryKey = uuid();
+	const recoveryKey = ulid();
 
 	const recoveryKeyEncryptedKeyPair = encrypt(keyPairString, recoveryKey);
 
