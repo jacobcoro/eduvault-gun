@@ -17,7 +17,7 @@ const createDbUser = async () => {
 	});
 
 	const keyPair = await SEA.pair();
-	console.log('save this into the .env.   as APP_KEY_PAIR= ...inside single quotes ');
+	console.log('save this into the .env.   as APP_KEY_PAIR= ...');
 	console.log(JSON.stringify(keyPair));
 };
 
@@ -31,7 +31,7 @@ const createJestUser = async () => {
 		if ('error' in ack) throw new Error('error creating user');
 	});
 	const jestKeyPair = await SEA.pair();
-	console.log('save this into the jest-env-api.cjs   as APP_KEY_PAIR= ...inside single quotes ');
+	console.log('save this into the jest-env-api.cjs   as APP_KEY_PAIR= ...');
 	console.log(JSON.stringify(jestKeyPair));
 };
 
