@@ -1,22 +1,18 @@
-import { APP_SECRET, RUN_ENV, TEST_ENV } from '../config';
-import Gun from 'gun/gun';
+import { APP_SECRET, TEST_ENV } from '../config';
+// import Gun from 'gun/gun';
 import GunNode from 'gun';
 import SEA from 'gun/sea';
 import then from 'gun/lib/then';
 
-import { createNewUser } from './createNewUser';
-import { dbEncrypt, doubleHashUser, hash } from './crypto';
+// frontend deps can usually work in backend (node) but usually not vice versa
+import { createNewUser, hash } from '../../../lib/helpers';
+import { dbEncrypt, doubleHashUser, sleep } from './index';
 
 export const dummyUserPassword = '123123123';
 export const dummyUserEmail = 'first@email.com';
 export const dummyUserOnceHashedPassword = hash(dummyUserPassword);
 export const usersKey = 'users';
 export const sessionsKey = 'sessions';
-
-/** Sleep is a wait function */
-export function sleep(ms: number) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 const prepareDummyUser = async (email: string = dummyUserEmail) => {
 	const dummyOnceHashed = await createNewUser(email, dummyUserPassword);
@@ -25,22 +21,12 @@ const prepareDummyUser = async (email: string = dummyUserEmail) => {
 	return enc;
 };
 
-/** use community in frontend and private peers in backend */
-export const communityPeers = [
-	// Community relay peers:
-	// https://github.com/amark/gun/wiki/volunteer.dht
-	'https://gun-manhattan.herokuapp.com/gun',
-	'https://gunmeetingserver.herokuapp.com/gun',
-	'https://gun-us.herokuapp.com/gun'
-];
-
 const initGun = async (peers: string[], userName: string, dbName: string) => {
 	console.time('total init time');
 
 	GunNode.SEA = SEA;
-	Gun.SEA = SEA;
 
-	const gunPublic = RUN_ENV === 'node' ? GunNode(peers) : Gun(peers);
+	const gunPublic = GunNode(peers);
 	const gunUser = gunPublic.user();
 
 	let authenticated = false;
@@ -88,7 +74,9 @@ const initGun = async (peers: string[], userName: string, dbName: string) => {
 
 	console.timeEnd('total init time');
 
-	return { gunPublic, gunUser };
+	return {
+		gunUser
+	};
 };
 
 export { initGun };

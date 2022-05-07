@@ -1,7 +1,7 @@
 import { createSession, getUserByEmail } from './_db';
 import { serialize } from 'cookie';
 import type { RequestHandler } from '@sveltejs/kit';
-import { validPasswordHash } from '../../lib/helpers/crypto';
+import { validPasswordHash } from './helpers';
 import type { SignInRequest } from 'src/types';
 
 export const post: RequestHandler = async ({ request }) => {

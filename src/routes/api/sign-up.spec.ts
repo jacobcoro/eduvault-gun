@@ -1,4 +1,4 @@
-import { dummyUserEmail } from '../../lib/helpers/initGun';
+import { dummyUserEmail } from './helpers';
 import type { RequestEvent } from '@sveltejs/kit/types/private';
 import 'gun/sea';
 import { post } from './sign-up';

@@ -2,6 +2,7 @@ import { createSession, getUserByEmail, registerUser } from './_db';
 import { serialize } from 'cookie';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { User } from 'src/types';
+
 export const post: RequestHandler = async ({ request }) => {
 	try {
 		const userSignup: User = await request.json();

@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
 	import Input from '$lib/components/Input.svelte';
 	import Button from '$lib/components/Button.svelte';
 
-	import { createNewUser } from '$lib/helpers/createNewUser';
-	import { createEventDispatcher } from 'svelte';
+	import { createNewUser } from '$lib/helpers';
 
 	let email = '';
 	let password = '';

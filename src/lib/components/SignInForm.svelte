@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+
 	import Input from '$lib/components/Input.svelte';
 	import Button from '$lib/components/Button.svelte';
 
-	import { hash } from '$lib/helpers/crypto';
-	import type { SignInRequest } from 'src/types';
+	import { hash } from '$lib/helpers';
+	import type { SignInRequest } from '../../types';
 
 	let email = '';
 	let password = '';

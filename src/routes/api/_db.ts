@@ -1,10 +1,10 @@
-import { dbDecrypt, dbEncrypt, doubleHashUser } from '../../lib/helpers/crypto';
-import type { ServerSession, User } from 'src/types';
 import { v4 as uuidv4 } from 'uuid';
-import { initGun, sleep, usersKey } from '../../lib/helpers/initGun';
-import { DB_NAME, PEERS } from '../../lib/config';
+
+import { dbDecrypt, dbEncrypt, doubleHashUser, initGun, sleep, usersKey } from './helpers';
+import { DB_NAME, PEERS } from './config';
 
 import type { IGunChain } from 'gun';
+import type { ServerSession, User } from 'src/types';
 
 /**
  * removes gundb metadata from data fetched with `.then()`
