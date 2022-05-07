@@ -1,7 +1,7 @@
 import { APP_SECRET, TEST_ENV } from '../config';
 // import Gun from 'gun/gun';
 import GunNode from 'gun';
-import { default as SEA } from 'gun/sea.js';
+import SEA from 'gun/sea.js';
 import then from 'gun/lib/then.js';
 
 // frontend deps can usually work in backend (node) but usually not vice versa
