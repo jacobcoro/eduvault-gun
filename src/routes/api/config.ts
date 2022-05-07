@@ -22,3 +22,5 @@ if (!APP_KEY_PAIR)
 export const DB_NAME = env.DB_NAME || 'eduvault-backend';
 
 export const PEERS = TEST_ENV === 'unit' ? [] : JSON.parse(env.PEERS ?? '[]');
+
+export const dummyUserEmail = 'first@email.com';

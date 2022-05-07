@@ -1,4 +1,4 @@
-import { dummyUserEmail } from './helpers';
+import { dummyUserEmail } from './config';
 import type { RequestEvent } from '@sveltejs/kit/types/private';
 import { post } from './sign-up';
 
