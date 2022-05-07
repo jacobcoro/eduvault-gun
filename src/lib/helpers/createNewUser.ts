@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import type { KeyPair, User } from 'src/types';
 import { decrypt, encrypt, hash } from './crypto';
-import { default as SEA } from 'gun/sea';
+import { default as SEA } from 'gun/sea.js';
 
 /** Only hashes the password once */
 export const createNewUser = async (email: string, password: string) => {
