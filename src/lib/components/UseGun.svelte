@@ -3,7 +3,7 @@
 
 	import type { IGunInstance, IGunInstanceRoot, IGunUserInstance } from 'gun';
 	import Gun from 'gun/gun';
-	import SEA from 'gun/sea';
+	import { default as SEA } from 'gun/sea';
 	import 'gun/lib/then';
 
 	import { sleep } from '$lib/helpers';

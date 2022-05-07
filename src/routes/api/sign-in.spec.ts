@@ -1,6 +1,5 @@
 import { dummyUserEmail } from './helpers/initGun';
 import type { RequestEvent } from '@sveltejs/kit/types/private';
-import 'gun/sea';
 import { post } from './sign-in';
 
 describe('sign-in', () => {
