@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { IGunChain, IGunInstance, IGunInstanceRoot, IGunUserInstance } from 'gun';
+	import type { IGunChain, IGunInstance, IGunInstanceRoot, IGunUserInstance } from '@jacobcoro/gun';
 
 	export let gunUser: IGunUserInstance<any, any, any, IGunInstanceRoot<any, IGunInstance<any>>>;
 

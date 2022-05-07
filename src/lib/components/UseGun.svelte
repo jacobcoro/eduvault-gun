@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import type { IGunInstance, IGunInstanceRoot, IGunUserInstance } from 'gun';
-	import Gun from 'gun/gun';
-	import SEA from 'gun/sea.js';
-	import 'gun/lib/then.js';
+	import type { IGunInstance, IGunInstanceRoot, IGunUserInstance } from '@jacobcoro/gun';
+	import Gun from '@jacobcoro/gun/gun';
+	import SEA from '@jacobcoro/gun/sea.js';
+	import '@jacobcoro/gun/lib/then.js';
 
 	import { sleep } from '$lib/helpers';
 

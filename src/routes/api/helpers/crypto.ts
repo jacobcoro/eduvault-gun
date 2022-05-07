@@ -1,6 +1,6 @@
 import { APP_KEY_PAIR } from '../config';
 import bcrypt from 'bcryptjs';
-import SEA from 'gun/sea.js';
+import SEA from '@jacobcoro/gun/sea.js';
 
 export const hashPassword = (password: string) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 

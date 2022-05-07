@@ -3,7 +3,7 @@ import { ulid } from 'ulid';
 import { dbDecrypt, dbEncrypt, doubleHashUser, initGun, sleep, usersKey } from './helpers';
 import { DB_NAME, PEERS } from './config';
 
-import type { IGunChain } from 'gun';
+import type { IGunChain } from '@jacobcoro/gun';
 import type { ServerSession, User } from 'src/types';
 
 /**
