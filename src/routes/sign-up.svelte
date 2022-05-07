@@ -2,14 +2,17 @@
 	import { goto } from '$app/navigation';
 	import SignUpForm from '$lib/components/SignUpForm.svelte';
 	import { session } from '$app/stores';
-	import type { User } from 'src/types';
+	import type { SignInRequestLocal } from 'src/types';
+	import { createNewUser, handleSignupSignInSuccess } from '$lib/helpers';
 
 	let error = '';
 
-	async function handleSubmit({ detail: user }: { detail: User }) {
+	async function handleSubmit({ detail: { email, password } }: { detail: SignInRequestLocal }) {
+		const newUser = await createNewUser(email, password);
+
 		const request = new Request('/api/sign-up', {
 			method: 'POST',
-			body: JSON.stringify(user),
+			body: JSON.stringify(newUser),
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -18,9 +21,11 @@
 
 		const body = await response.json();
 		if (response.ok) {
+			const sessionIDEncryptedKeyPair = handleSignupSignInSuccess(body, password);
+
 			// session from getSession hook will otherwise not be set before navigation
 			// that would trigger redirect from /app back to /sign-in
-			$session = body;
+			$session = { id: body.id, user: { ...body.user, sessionIDEncryptedKeyPair } };
 			await goto('/app');
 		}
 		error = body.message;

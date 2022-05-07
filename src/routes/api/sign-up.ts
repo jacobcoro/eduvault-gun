@@ -6,13 +6,9 @@ import type { User } from 'src/types';
 export const post: RequestHandler = async ({ request }) => {
 	try {
 		const userSignup: User = await request.json();
-		if (
-			!userSignup.email ||
-			!userSignup.passwordHash ||
-			!userSignup.pubKey ||
-			!userSignup.pwEncryptedKeyPair ||
-			!userSignup.recoveryKeyEncryptedKeyPair
-		)
+		const { email, passwordHash, pubKey, pwEncryptedKeyPair, recoveryKeyEncryptedKeyPair } =
+			userSignup;
+		if (!email || !passwordHash || !pubKey || !pwEncryptedKeyPair || !recoveryKeyEncryptedKeyPair)
 			return {
 				status: 409,
 				body: {
@@ -20,7 +16,7 @@ export const post: RequestHandler = async ({ request }) => {
 				}
 			};
 
-		const existingUser = await getUserByEmail(userSignup.email);
+		const existingUser = await getUserByEmail(email);
 		console.log({ existingUser });
 		if (existingUser) {
 			return {
@@ -30,9 +26,9 @@ export const post: RequestHandler = async ({ request }) => {
 				}
 			};
 		} else {
-			const newUser = await registerUser(userSignup);
+			await registerUser(userSignup);
 
-			const { id } = await createSession(userSignup.email);
+			const { id } = await createSession(email);
 			return {
 				status: 201,
 				headers: {
@@ -45,8 +41,11 @@ export const post: RequestHandler = async ({ request }) => {
 					})
 				},
 				body: {
+					id,
 					user: {
-						...newUser
+						email,
+						pubKey,
+						pwEncryptedKeyPair
 					}
 				}
 			};

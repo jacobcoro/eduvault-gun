@@ -6,12 +6,14 @@ type User = import('./types').User;
 // for information about these interfaces
 declare namespace App {
 	interface Locals {
+		id: string;
 		user: User | null;
 	}
 
 	// interface Platform {}
 
 	interface Session {
+		id?: string;
 		user?: User;
 	}
 

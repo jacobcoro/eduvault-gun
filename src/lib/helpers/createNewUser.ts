@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import type { User } from 'src/types';
+import type { KeyPair, User } from 'src/types';
 import { decrypt, encrypt, hash } from './crypto';
 import SEA from 'gun/sea';
 
@@ -41,4 +41,17 @@ export const createNewUser = async (email: string, password: string) => {
 	};
 
 	return signupData;
+};
+
+export const handleSignupSignInSuccess = (body: { id: string; user: User }, password: string) => {
+	const user = body.user;
+	const keyPairDecrypted = decrypt(user.pwEncryptedKeyPair, password);
+	const keyPairParsed = JSON.parse(keyPairDecrypted ?? '') as KeyPair;
+	let sessionIDEncryptedKeyPair = '';
+	if (keyPairParsed && keyPairParsed.epub === user.pubKey) {
+		sessionIDEncryptedKeyPair = encrypt(keyPairDecrypted, body.id);
+		localStorage.setItem('sessionIDEncryptedKeyPair', sessionIDEncryptedKeyPair);
+	} else console.error('keys do not match');
+
+	return sessionIDEncryptedKeyPair;
 };

@@ -9,7 +9,7 @@ export const post: RequestHandler = async ({ request }) => {
 		const { email, passwordHash }: SignInRequest = await request.json();
 		const user = await getUserByEmail(email);
 		console.log({ user });
-		if (!user) {
+		if (!user || !user.passwordHash) {
 			return {
 				status: 401,
 				body: {
@@ -41,6 +41,7 @@ export const post: RequestHandler = async ({ request }) => {
 				})
 			},
 			body: {
+				id,
 				user: { ...user }
 			}
 		};

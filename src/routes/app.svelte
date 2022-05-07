@@ -12,6 +12,7 @@
 		}
 		return {
 			props: {
+				id: session.id,
 				user: session.user
 			}
 		};
@@ -20,14 +21,34 @@
 
 <script lang="ts">
 	import UseGun from '$lib/components/UseGun.svelte';
-	import type { User } from 'src/types';
+	import type { KeyPair, User } from 'src/types';
 	import { session } from '$app/stores';
+	import { decrypt } from '$lib/helpers';
+	import { onMount } from 'svelte';
 	export let user: User;
+	export let id: string;
+
 	$session.user;
+	$session.id;
+
+	let sessionIDEncryptedKeyPair = '';
+	let keyPair: KeyPair | null = null;
+
+	onMount(() => {
+		sessionIDEncryptedKeyPair =
+			user.sessionIDEncryptedKeyPair ?? localStorage.getItem('sessionIDEncryptedKeyPair') ?? '';
+
+		if (sessionIDEncryptedKeyPair && id) {
+			const keyPairDecrypted = decrypt(sessionIDEncryptedKeyPair, id);
+			const keyPairParsed = JSON.parse(keyPairDecrypted ?? '') as KeyPair;
+			if (keyPairParsed && keyPairParsed.epub === user.pubKey) keyPair = keyPairParsed;
+			else console.error('keys do not match');
+		}
+	});
 </script>
 
-<UseGun username={user.email} password={user.passwordHash} let:gunUser>
-	{#if user.email}
+{#if keyPair?.epub}
+	<UseGun username={keyPair?.epub} password={keyPair?.epriv} let:gunUser>
 		<GunTodo {gunUser} />
-	{/if}
-</UseGun>
+	</UseGun>
+{/if}

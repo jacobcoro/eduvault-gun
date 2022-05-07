@@ -13,6 +13,7 @@ export const validPasswordHash = (providedPassword: string, storedPasswordHash: 
 };
 
 export const doubleHashUser = (user: User) => {
+	if (!user.passwordHash) throw new Error('must be called with password hash');
 	const doubleHashedPassword = hashPassword(user.passwordHash);
 	return { ...user, passwordHash: doubleHashedPassword };
 };

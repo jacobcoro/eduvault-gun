@@ -4,8 +4,7 @@
 	import Input from '$lib/components/Input.svelte';
 	import Button from '$lib/components/Button.svelte';
 
-	import { hash } from '$lib/helpers';
-	import type { SignInRequest } from '../../types';
+	import type { SignInRequestLocal } from '../../types';
 
 	let email = '';
 	let password = '';
@@ -40,9 +39,9 @@
 	const dispatch = createEventDispatcher();
 
 	function submit() {
-		const SignInRequest: SignInRequest = {
+		const SignInRequest: SignInRequestLocal = {
 			email,
-			passwordHash: hash(password)
+			password
 		};
 		dispatch('submit', SignInRequest);
 	}

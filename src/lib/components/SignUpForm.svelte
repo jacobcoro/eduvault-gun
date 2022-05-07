@@ -4,7 +4,7 @@
 	import Input from '$lib/components/Input.svelte';
 	import Button from '$lib/components/Button.svelte';
 
-	import { createNewUser } from '$lib/helpers';
+	import type { SignInRequestLocal } from 'src/types';
 
 	let email = '';
 	let password = '';
@@ -44,7 +44,7 @@
 
 	const submit = async () => {
 		try {
-			const submitData = await createNewUser(email, password);
+			const submitData: SignInRequestLocal = { email, password };
 
 			dispatch('submit', submitData);
 		} catch (err) {
