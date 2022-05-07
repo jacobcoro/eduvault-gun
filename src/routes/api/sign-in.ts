@@ -1,23 +1,33 @@
 import { createSession, getUserByEmail } from './_db';
 import { serialize } from 'cookie';
 import type { RequestHandler } from '@sveltejs/kit';
-import { validPasswordHash } from '$lib/helpers/crypto';
+import { validPasswordHash } from '../../lib/helpers/crypto';
 import type { SignInRequest } from 'src/types';
 
 export const post: RequestHandler = async ({ request }) => {
 	try {
 		const { email, passwordHash }: SignInRequest = await request.json();
 		const user = await getUserByEmail(email);
-		if (!user || !validPasswordHash(passwordHash, user.passwordHash)) {
+		console.log({ user });
+		if (!user) {
 			return {
 				status: 401,
 				body: {
-					message: 'Incorrect user or password'
+					message: 'Incorrect user name'
 				}
 			};
 		}
 
-		const { id } = createSession(email);
+		if (!validPasswordHash(passwordHash, user.passwordHash)) {
+			return {
+				status: 401,
+				body: {
+					message: 'Incorrect password'
+				}
+			};
+		}
+
+		const { id } = await createSession(email);
 
 		return {
 			status: 200,

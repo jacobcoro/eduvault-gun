@@ -1,4 +1,4 @@
-import { hashPassword, validPasswordHash } from './crypto';
+import { hashPassword, validPasswordHash, dbDecrypt, dbEncrypt } from './crypto';
 
 const password = 'super-duper-$3CR3T';
 
@@ -15,4 +15,11 @@ describe('password hashing', () => {
 		const invalid = validPasswordHash('doodah', hash);
 		expect(invalid).toBe(false);
 	});
+});
+
+test('db decrypt', async () => {
+	const thing = { foo: 'bar' };
+	const enc = await dbEncrypt(thing);
+	const dec = await dbDecrypt<{ foo: 'bar' }>(enc);
+	expect(dec.foo).toBe('bar');
 });

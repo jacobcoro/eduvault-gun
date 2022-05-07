@@ -1,69 +1,90 @@
-import { hashPassword } from '$lib/helpers/crypto';
+import { dbDecrypt, dbEncrypt, doubleHashUser } from '../../lib/helpers/crypto';
 import type { ServerSession, User } from 'src/types';
 import { v4 as uuidv4 } from 'uuid';
-import { initGun } from '$lib/helpers/initGun';
-import { APP_KEY_PAIR, APP_SECRET, DB_NAME, PEER1, PEER2 } from '$lib/config';
-import SEA from 'gun/sea';
-import then from 'gun/lib/then';
-const gun = initGun([PEER1, PEER2]);
-const userKey = 'user';
-const sessionKey = 'session';
+import { initGun, sleep, usersKey } from '../../lib/helpers/initGun';
+import { DB_NAME, PEERS } from '../../lib/config';
 
-const gunUser = gun.user();
-let db = gunUser.get(DB_NAME);
+import type { IGunChain } from 'gun';
 
-gunUser.auth(DB_NAME, APP_SECRET, (ack) => {
-	console.log({ ack });
-	db = gunUser.get(DB_NAME);
-	db.get(userKey).on((change) => {
-		console.log(change);
-	});
-});
-const appKeyPair = JSON.parse(APP_KEY_PAIR);
-
-async function dbEncrypt(data: unknown) {
-	return await SEA.encrypt(data, appKeyPair);
-}
-async function dbDecrypt<T>(data: string) {
-	// seems that decrypt already applies JSON.parse on the data
-	return (await SEA.decrypt(data, appKeyPair)) as T;
+/**
+ * removes gundb metadata from data fetched with `.then()`
+ *
+ * optimistically adds a type to the data (be careful, the return data might not actually be that type.)
+ */
+export function sanitize<T>(o: any) {
+	const copy = { ...o };
+	delete copy._;
+	return copy as T;
 }
 
-const users: User[] = [];
+// might need the root db later.
+// type GunUser = IGunUserInstance<any, any, any, IGunInstanceRoot<any, IGunInstance<any>>>;
+// let dbRoot: GunUser | null = null;
+
+let db: IGunChain<any, any, any, string> | null = null;
+
 let sessions: ServerSession[] = [];
 
-export const getUserByEmail = (email: string) => {
-	const existingUser = users.find((user) => user.email === email);
-	if (!existingUser) return null;
-	return existingUser;
-};
+initGun(PEERS, DB_NAME, DB_NAME).then(({ gunUser }) => {
+	// dbRoot = gunUser;
+	db = gunUser.get(DB_NAME);
+});
 
-const log = (data: any) => console.log(data);
+export const getUserByEmail = async (email: string) => {
+	while (!db) await sleep(35); // // to query all users
+	// query all users
+	// db.get(usersKey)
+	// 	.map()
+	// 	.once(async (data) => {
+	// 		const userMap = data ? await dbDecrypt(data) : null;
+	// 		console.log({ userMap });
+	// 	});
+	// or
+	// buggy - sometimes it hangs on this forever without any feedback
+	// const users = await db.get(usersKey).map().once().then();
+	// console.log({ users });
+
+	let user: User | null = null;
+	let finished = false;
+	// strange behavior from gun. Was not able to use the .then() await syntax because sometimes await db.get(usersKey).get(email) returns ALL the users.
+	db.get(usersKey)
+		.get(email)
+		.once(async (encryptedUser) => {
+			user = encryptedUser ? await dbDecrypt<User>(encryptedUser) : null;
+			finished = true;
+		});
+
+	while (!finished) await sleep(35);
+	// console.log({ user });
+
+	if (!user) return null;
+	return user as User;
+};
 
 export const registerUser = async (user: User) => {
-	console.log({ user });
-	const users = await db.get(userKey).map().then();
-	console.log({ users });
-	users.once(log);
-	const existingUser = users.get(user.pubKey);
-	existingUser.once(log);
-	const email = existingUser.get('email');
-	email.once(log);
-	// if (existingUser) throw new Error('User already exists');
+	while (!db) await sleep(35);
 
-	const encryptedUser = await dbEncrypt(user);
-	const decryptedUser = await dbDecrypt<User>(encryptedUser);
-	if (decryptedUser.pubKey !== user.pubKey) throw new Error('unable to encrypt and decrypt');
-	db.get(userKey).put({ [user.pubKey]: encryptedUser });
+	const existingUser = await getUserByEmail(user.email);
+	if (existingUser) throw new Error('User already exists');
 
 	// Yes I know we have ssl etc. But this double hashing means the original password never even leaves the frontend.
-	const doubleHashedPassword = hashPassword(user.passwordHash);
-	// users.push({ ...user, passwordHash: doubleHashedPassword });
-	return user;
+
+	const doubleHashedUser = doubleHashUser(user);
+	let encryptedUser = '';
+	let decryptedUser: User | null = null;
+
+	encryptedUser = await dbEncrypt(doubleHashedUser);
+	decryptedUser = await dbDecrypt<User>(encryptedUser);
+	if (!decryptedUser || decryptedUser.pubKey !== user.pubKey)
+		throw new Error('unable to encrypt and decrypt');
+
+	await db.get(usersKey).get(user.email).put(encryptedUser).then();
+
+	return doubleHashedUser;
 };
 
-export const createSession = (email: string) => {
-	const user = getUserByEmail(email);
+export const createSession = async (email: string) => {
+	const user = await getUserByEmail(email);
 	if (!user) throw new Error('user not found by email');
 	const session: ServerSession = {
 		id: uuidv4(),
