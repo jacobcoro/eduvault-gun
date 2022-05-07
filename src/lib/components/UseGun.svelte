@@ -4,7 +4,7 @@
 	import type { IGunInstance, IGunInstanceRoot, IGunUserInstance } from 'gun';
 	import Gun from 'gun/gun';
 	import { default as SEA } from 'gun/sea.js';
-	import 'gun/lib/then';
+	import 'gun/lib/then.js';
 
 	import { sleep } from '$lib/helpers';
 
